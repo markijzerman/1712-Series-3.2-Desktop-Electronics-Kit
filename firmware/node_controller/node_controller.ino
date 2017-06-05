@@ -1,16 +1,52 @@
-#include "C:\Users\Adam Francey\Documents\GitHub\1712-Series-3.2-Desktop-Electronics-Kit\firmware\libraries\config\config.h"
-#include "C:\Users\Adam Francey\Documents\GitHub\1712-Series-3.2-Desktop-Electronics-Kit\firmware\libraries\DMHighCurrent\DMHighCurrent.h"
-#include "C:\Users\Adam Francey\Documents\GitHub\1712-Series-3.2-Desktop-Electronics-Kit\firmware\libraries\DMLowCurrent\DMLowCurrent.h"
+/*
+* node_controller.ino - Example Sketch for Serial Communication between Node and RPi/Computer
+* Created By Kevin Lam, June 5, 2017
+* Released for Desktop Kit
+* Philip Beesley Architect Inc. / Living Architecture Systems Group
+*/
 
-//#include "config.h"
-//#include "DMHighCurrent.h"
-//#include "DMLowCurrent.h"
+#include "dm_high_current.h"
+//#include "dm_low_current.h"
+#include "node_ports.h"
+#include "Arduino.h"
+
+#define kBaudRate		9600
+#define kActuatorPort	1
+#define kSensorPort		5
+#define kPort2BoardType 1
+
+Port2 port2(kPort2BoardType);
 
 void setup() {
+
+  pinMode(9, OUTPUT);
+	Serial.begin(kBaudRate);
 
 }
 
 void loop() {
 
+	if (Serial.available())	{
+//		String input_string = "";
+    int input_integer;
+		while (Serial.available()){
+//			char input_char = Serial.read();
+//			input_string += input_char;
+      input_integer = Serial.read();
+		}
+		if (input_integer) {
+      Serial.print("Input Integer: ");
+      Serial.println(input_integer);
+			port2.DMHigh.writeActuator(kActuatorPort, 1);
+			delay(1000);
+			port2.DMHigh.writeActuator(kActuatorPort, 0);
+			delay(1000);
+		}
+	}
+	if (port2.DMHigh.readAnalog(kSensorPort) > 300) {
+		Serial.println(port2.DMHigh.readAnalog(kSensorPort));
+	}
+
+  delay(500);
 
 }

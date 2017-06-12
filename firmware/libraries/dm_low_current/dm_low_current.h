@@ -15,14 +15,13 @@ class DeviceModuleLow
 {
 public:
 	DeviceModuleLow();
-	DeviceModuleLow(int digital_pin_array[], int analog_pin_array[]);
-	void writeActuator(int port_number, bool port_state);
-	int readAnalog(int port_number);
-	
+	void writeActuator(char port_char, bool port_state);
+	int analogRead(char port_char);
+	void setPinMapping(const int digital_pin_array[], const int analog_pin_array[]);
+
 private:
 	int digital_port_pin[8];
 	int analog_port_pin[8];
-	SoftwareSerial serial_port;
 
 };
 

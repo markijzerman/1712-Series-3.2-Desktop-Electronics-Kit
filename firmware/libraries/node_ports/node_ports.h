@@ -10,7 +10,7 @@
 
 #include "Arduino.h"
 #include "dm_high_current.h"
-//#include "dm_low_current.h"
+#include "dm_low_current.h"
 
 class Port0
 {
@@ -19,7 +19,7 @@ public:
 	Port0(String board_type);
 	//JackPlateBoard JackPlate;
 	DeviceModuleHigh DMHigh;
-	//DeviceModuleLow DMLow;
+	DeviceModuleLow DMLow;
 private:
 	const int kDigitalPortPin[8] = { 3, 4, 5, 20, 27, A11, 16, 17 };
 	const int kAnalogPortPin[8] = { 3, 4, 5, A6, A16, A11, A2, A3 };
@@ -32,7 +32,7 @@ public:
 	Port1(String board_type);
 	//JackPlateBoard JackPlate;
 	DeviceModuleHigh DMHigh;
-	//DeviceModuleLow DMLow; 
+	DeviceModuleLow DMLow; 
 private:
 	const int kDigitalPortPin[8] = { 25, 32, 6, 21, 28, A13, 26, 31 };
 	const int kAnalogPortPin[8] = { 25, 32, 6, A7, A17, A13, A15, A20 };
@@ -45,7 +45,7 @@ public:
 	Port2(String board_type);
 	//JackPlateBoard JackPlate;
 	DeviceModuleHigh DMHigh;
-	//DeviceModuleLow DMLow;
+	DeviceModuleLow DMLow;
 private:
 	const int kDigitalPortPin[8] = { 9, 10, 22, 23, 14, 15, 29, 30 };
 	const int kAnalogPortPin[8] = { 9, 10, A8, A9, A0, A1, A18, A19 };
@@ -61,7 +61,7 @@ public:
 	PortS(String board_type);
 	//JackPlateBoard JackPlate;
 	DeviceModuleHigh DMHigh;
-	//DeviceModuleLow DMLow;
+	DeviceModuleLow DMLow;
 };
 
 #endif

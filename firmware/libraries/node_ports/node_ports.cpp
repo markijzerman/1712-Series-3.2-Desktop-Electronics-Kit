@@ -13,16 +13,33 @@ Port0::Port0() {
 
 Port0::Port0(String board_type){
 
-	if (board_type == "1") {
+	if (board_type == "DM_HIGH") {
 		DMHigh.setPinMapping((*this).kDigitalPortPin, (*this).kAnalogPortPin);
 	}
+	else if (board_type == "DM_LOW") {
+		DMLow.setPinMapping((*this).kDigitalPortPin, (*this).kAnalogPortPin);
+	}
+
+}
+
+Port1::Port1() {
+
+
+
+}
+
+Port2::Port2() {
 
 }
 
 Port2::Port2(String board_type) {
 
-	if (board_type == "1") {
+	if (board_type == "2") {
 		DMHigh.setPinMapping((*this).kDigitalPortPin, (*this).kAnalogPortPin);
 	}
+
+}
+
+PortS::PortS() {
 
 }

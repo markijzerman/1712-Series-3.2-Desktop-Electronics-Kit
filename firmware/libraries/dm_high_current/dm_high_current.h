@@ -14,13 +14,13 @@ class DeviceModuleHigh
 {
 public:
 	DeviceModuleHigh();
+	void writeActuator(char port_char, int port_state);
+	int readAnalog(char port_char);
 	void setPinMapping(const int digital_pin_array[], const int analog_pin_array[]);
-	void writeActuator(int port_number, int port_state);
-	int readAnalog(int port_number);
+
 private:
 	int digital_port_pin[8];
 	int analog_port_pin[8];
-
 };
 
 

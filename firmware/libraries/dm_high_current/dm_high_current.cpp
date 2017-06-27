@@ -19,9 +19,9 @@ DeviceModuleHigh::DeviceModuleHigh() {
 
 }
 
-void DeviceModuleHigh::writeActuator(char port_char, int port_state) {
+void DeviceModuleHigh::digitalWriteDM(char port_char, int port_state) {
 	
-	int pin_number = 0;
+	int pin_number = -1;
 
 	if (port_char == 'C') { pin_number = digital_port_pin[0]; }
 	else if (port_char == 'D') { pin_number = digital_port_pin[1]; }
@@ -30,18 +30,25 @@ void DeviceModuleHigh::writeActuator(char port_char, int port_state) {
 	else if (port_char == 'G') { pin_number = digital_port_pin[6]; }
 	else if (port_char == 'H') { pin_number = digital_port_pin[7]; }
 
-	digitalWrite(digital_port_pin[pin_number], port_state);
+	if (pin_number != -1)  {
+		digitalWrite(digital_port_pin[pin_number], port_state);
+	}
 
 }
 
-int DeviceModuleHigh::readAnalog(char port_char){
+int DeviceModuleHigh::analogReadDM(char port_char){
 
-	int pin_number = 0;
+	int pin_number = -1;
 
 	if (port_char == 'A') { pin_number = analog_port_pin[4]; }
 	else if (port_char == 'B') { pin_number = analog_port_pin[5]; }
 
-	return analogRead(analog_port_pin[pin_number]);
+
+	if (pin_number != -1){
+		return analogRead(analog_port_pin[pin_number]);
+	}
+
+	return 0;
 
 }
 

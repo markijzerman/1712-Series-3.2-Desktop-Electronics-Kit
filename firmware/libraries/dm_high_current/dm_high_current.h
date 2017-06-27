@@ -14,9 +14,13 @@ class DeviceModuleHigh
 {
 public:
 	DeviceModuleHigh();
-	void writeActuator(char port_char, int port_state);
-	int readAnalog(char port_char);
 	void setPinMapping(const int digital_pin_array[], const int analog_pin_array[]);
+
+	//Arduino Functions, Accounting for Pin Mapping
+	void digitalWriteDM(char port_char, int port_state);
+	int analogReadDM(char port_char);
+	void 
+
 
 private:
 	int digital_port_pin[8];

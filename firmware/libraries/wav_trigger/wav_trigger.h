@@ -8,25 +8,19 @@ class WAVTrigger{
     public:   
 
         WAVTrigger();
-        WAVTrigger(bool hard);
-        WAVTrigger(int pin_softRX, int pin_softTX);
         ~WAVTrigger();
-
-        SoftwareSerial WAVSerial = SoftwareSerial(3,4); // init with port 2 pins, just because. They get changed upon init
-        bool hardSerial; // 0 = softserial, 1 = hardserial
-        void WAVStart();
         void trackControl(int trk, int code);
         void masterGain(int gain);
         void trackFade(int trk, int gain, int time, bool stopFlag);
         void trackGain(int trk, int gain);
 
-        void playInFuture(int trk, int ms);
-        void updateTracks();
-
-        // countdowns to play a future sound
-        int futureCountdown[20] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-        // the track to play when the countdown above hits zero
-        int futureTrack[20] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+        const int kMaxBufferSize = 12;
+        const int kTrackControlBufferSize = 8;
+        const int kMasterGainBufferSize = 7;
+        const int kTrackGainBufferSize = 9;
+        const int kFadeBufferSize = 12;
+        int buffer_size;
+        uint8_t buffer[12];
               
 };
 

@@ -9,6 +9,7 @@
 //#include "dm_low_current.h"
 #include "node_ports.h"
 #include "Arduino.h"
+#include "wav_trigger.h"
 
 #define kBaudRate		9600
 #define kActuatorPort	1
@@ -17,10 +18,15 @@
 
 Port2 port2(kPort2BoardType);
 
+SoftwareSerial WAVTriggerSerial(3,4); // serial pins connected to P0;
+wav_trigger WAVTrigger;
+
 void setup() {
 
   pinMode(9, OUTPUT);
 	Serial.begin(kBaudRate);
+
+  WAVTrigger.begin(57600);
 
 }
 
@@ -47,6 +53,14 @@ void loop() {
 		Serial.println(port2.DMHigh.readAnalog(kSensorPort));
 	}
 
+
+ //play a sound
+ WAVTrigger.trackControl(1, TRK_PLAY_POLY)
+ WAVTriggerSerial.write(WAVTrigger.buffer,WAVTrigger.buffer_size)
+ 
+
   delay(500);
 
 }
+
+void example_

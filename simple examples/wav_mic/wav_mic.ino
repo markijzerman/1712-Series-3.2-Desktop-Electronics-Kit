@@ -80,7 +80,12 @@ void trackControl(int trk, int code){
 
 
 void setup() {
+
+  pinMode(envelope_pin, INPUT);
+  pinMode(audio_pin, INPUT);
+  
   // start the serial port for the WAV trigger
+  //
   WAVSerial.begin(57600);
 }
 

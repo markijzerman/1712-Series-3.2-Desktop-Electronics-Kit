@@ -5,22 +5,14 @@
 * Philip Beesley Architect Inc. / Living Architecture Systems Group
 */
 
-#pragma once
 #include "dm_high_current.h"
 
 DeviceModuleHigh::DeviceModuleHigh() {
 
-	pinMode(digital_port_pin[0], OUTPUT);
-	pinMode(digital_port_pin[1], OUTPUT);
-	pinMode(digital_port_pin[2], OUTPUT);
-	pinMode(digital_port_pin[3], OUTPUT);
-	pinMode(digital_port_pin[6], OUTPUT);
-	pinMode(digital_port_pin[7], OUTPUT);
-
 }
 
 void DeviceModuleHigh::digitalWriteDM(char port_char, int port_state) {
-	
+
 	int pin_number = -1;
 
 	if (port_char == 'C') { pin_number = digital_port_pin[0]; }
@@ -56,5 +48,14 @@ void DeviceModuleHigh::setPinMapping(const int digital_pin_array[], const int an
 
 	memcpy(digital_port_pin, digital_pin_array, sizeof(digital_port_pin));
 	memcpy(analog_port_pin, analog_pin_array, sizeof(analog_port_pin));
+
+	pinMode(digital_port_pin[0], OUTPUT);
+	pinMode(digital_port_pin[1], OUTPUT);
+	pinMode(digital_port_pin[2], OUTPUT);
+	pinMode(digital_port_pin[3], OUTPUT);
+	pinMode(digital_port_pin[6], OUTPUT);
+	pinMode(digital_port_pin[7], OUTPUT);
+	pinMode(digital_port_pin[4], INPUT);
+	pinMode(digital_port_pin[5], INPUT);
 
 }

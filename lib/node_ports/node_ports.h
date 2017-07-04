@@ -32,7 +32,7 @@ public:
 	Port1(String board_type);
 	//JackPlateBoard JackPlate;
 	DeviceModuleHigh DMHigh;
-	DeviceModuleLow DMLow; 
+	DeviceModuleLow DMLow;
 private:
 	const int kDigitalPortPin[8] = { 25, 32, 6, 21, 28, A13, 26, 31 };
 	const int kAnalogPortPin[8] = { 25, 32, 6, A7, A17, A13, A15, A20 };
@@ -53,15 +53,15 @@ private:
 
 class PortS
 {
-private:
-	const int kDigitalPortPin[8] = { 7, 8, 33, 11, 12, 13, 18, 19 };
-	const int kAnalogPortPin[8] = { 7, 8, 33, 11, 12, 13, A4, A5 };
 public:
 	PortS();
 	PortS(String board_type);
 	//JackPlateBoard JackPlate;
 	DeviceModuleHigh DMHigh;
 	DeviceModuleLow DMLow;
+private:
+	const int kDigitalPortPin[8] = { 7, 8, 33, 11, 12, 13, 18, 19 };
+	const int kAnalogPortPin[8] = { 7, 8, 33, 11, 12, 13, A4, A5 };
 };
 
 #endif

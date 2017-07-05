@@ -6,15 +6,12 @@
 */
 
 #include "dm_high_current.h"
-//#include "dm_low_current.h"
+#include "dm_low_current.h"
 #include "node_ports.h"
 #include "Arduino.h"
 #include "wav_trigger.h"
-
-#define kBaudRate		9600
-#define kActuatorPort	1
-#define kSensorPort		5
-#define kPort2BoardType 1
+#include "sound_detector.h"
+#include "usb_serial_comm.h"
 
 // Port2 port2(kPort2BoardType);
 //

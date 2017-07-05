@@ -9,17 +9,19 @@
 #define SOUND_DETECTOR_H_
 
 #include <arm_math.h>
+#include <IntervalTimer.h>
+
+#define FFT_SIZE 256
 
 class SoundDetector{
 
 	public:
-		SoundDetector();
+		SoundDetector(const int input_pin, const int envelope_pin);
 		~SoundDetector();
 
 		int readRawAudio();
 		int readEnvelope();
 		void runFFT();
-		void 
 
 		void beginSampling();
 		bool isSamplingDone();
@@ -28,11 +30,10 @@ class SoundDetector{
 
 	private:
 
-		int audio_input_pin_;
-		int envelope_pin;
+		int audio_input_pin;
+		int audio_envelope_pin;
 
 		const int SAMPLE_RATE_HZ = 9000;		// Frequency between sampling each value in the input. For given sample rate, frequencies up to half the rate can be measured.
-		const int FFT_SIZE = 256;              	// Size of the FFT, number of output frequency bins.  At most, 256 for Teensy 3.0
 		const int ANALOG_READ_RESOLUTION = 10; 	// Bits of resolution for the ADC.
 		const int ANALOG_READ_AVERAGING = 16;  	// Number of samples to average with each ADC reading.
 
@@ -40,10 +41,10 @@ class SoundDetector{
 		float samples[FFT_SIZE*2];
 		float magnitudes[FFT_SIZE];
 		int sampleCounter = 0;
-		float frequencyWindow[NEO_PIXEL_COUNT+1];
+		float frequencyWindow[2];
 
 		void windowMean(float* magnitudes, int lowBin, int highBin, float* windowMean, float* otherMean);
-		void frequencyToBin(float frequency);
+		int frequencyToBin(float frequency);
 		void samplingCallback();
 
 };

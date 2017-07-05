@@ -5,15 +5,15 @@
 * Philip Beesley Architect Inc. / Living Architecture Systems Group
 */
 
+#include <Arduino.h>
 #include "sound_detector.h"
 
-SoundDetector::SoundDetector(){
-
+SoundDetector::SoundDetector(const int input_pin, const int envelope_pin) : audio_input_pin(input_pin), audio_envelope_pin(envelope_pin) {
 
 }
 
 int SoundDetector::readRawAudio(){
-	return analogRead(audio_pin);
+	return analogRead(audio_input_pin);
 }
 
 void SoundDetector::runFFT(){

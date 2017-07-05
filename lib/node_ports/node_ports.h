@@ -5,8 +5,8 @@
 * Philip Beesley Architect Inc. / Living Architecture Systems Group
 */
 
-#ifndef NODE_PORTS_h
-#define NODE_PORTS_h
+#ifndef NODE_PORTS_H_
+#define NODE_PORTS_H_
 
 #include "Arduino.h"
 #include "dm_high_current.h"
@@ -15,8 +15,7 @@
 class Port0
 {
 public:
-	Port0();
-	Port0(String board_type);
+	Port0() : DMHigh(kDigitalPortPin, kAnalogPortPin), DMLow(kDigitalPortPin, kAnalogPortPin){}
 	//JackPlateBoard JackPlate;
 	DeviceModuleHigh DMHigh;
 	DeviceModuleLow DMLow;
@@ -28,8 +27,7 @@ private:
 class Port1
 {
 public:
-	Port1();
-	Port1(String board_type);
+	Port1() : DMHigh(kDigitalPortPin, kAnalogPortPin), DMLow(kDigitalPortPin, kAnalogPortPin){}
 	//JackPlateBoard JackPlate;
 	DeviceModuleHigh DMHigh;
 	DeviceModuleLow DMLow;
@@ -41,8 +39,7 @@ private:
 class Port2
 {
 public:
-	Port2();
-	Port2(String board_type);
+	Port2() : DMHigh(kDigitalPortPin, kAnalogPortPin), DMLow(kDigitalPortPin, kAnalogPortPin){}
 	//JackPlateBoard JackPlate;
 	DeviceModuleHigh DMHigh;
 	DeviceModuleLow DMLow;
@@ -54,8 +51,7 @@ private:
 class PortS
 {
 public:
-	PortS();
-	PortS(String board_type);
+	PortS() : DMHigh(kDigitalPortPin, kAnalogPortPin), DMLow(kDigitalPortPin, kAnalogPortPin){}
 	//JackPlateBoard JackPlate;
 	DeviceModuleHigh DMHigh;
 	DeviceModuleLow DMLow;
@@ -64,4 +60,4 @@ private:
 	const int kAnalogPortPin[8] = { 7, 8, 33, 11, 12, 13, A4, A5 };
 };
 
-#endif
+#endif //NODE_PORTS_H_

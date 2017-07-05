@@ -1,38 +1,41 @@
-#include usb_serial_comms.h
+/*
+* usb_serial_comm.cpp - Library for Communication Protocol between Raspberry Pi and Node
+* Created By Adam Francey, Kevin Lam, July 5, 2017
+* Released for Desktop Kit
+* Philip Beesley Architect Inc. / Living Architecture Systems Group
+*/
 
-USBSerialComms::USBSerialComms(){}
-USBSerialComms::~USBSerialComms(){}
+#include <Arduino.h>
+#include <stdint.h>
+#include "usb_serial_comm.h"
 
-void USBSerialComms::SendMessage(){}
+USBSerialComm::USBSerialComm(){}
 
-// checks for incoming serial message
-// return reception status
-// Updates following USBSerialComms class members:
-// message_waiting
-// last_data_received
-// last_code_received
-// last_data_length
-bool USBSerialComms::CheckMessage(){
+USBSerialComm::~USBSerialComm(){}
+
+void USBSerialComm::SendMessage(uint8_t msg){}
+
+bool USBSerialComm::CheckMessage(){
 
 	message_waiting = 0;
 
 	// Teensy ID
-	byte t1;
-	byte t2;
-	byte t3;
+	uint8_t t1;
+	uint8_t t2;
+	uint8_t t3;
 
 	// modifiers
-	byte length;
-	byte code;
+	uint8_t length;
+	uint8_t code;
 
-	if (Serial.available()>=11){ // 11 = minimum message length
+	if (Serial.available()>=MIN_DATA_LENGTH){ // 11 = minimum message length
 
 		// check for SOM
 		for (int s = 0; s < NUM_SOM; s++){
 			if (Serial.read() != SOM[s]){return 0;} // Fail: no SOM
 		}
 
-		// read Teensy ID, length, code
+		// read Teensy ID, length, coded
 		t1 = Serial.read();
 		t2 = Serial.read();
 		t3 = Serial.read();
@@ -40,9 +43,9 @@ bool USBSerialComms::CheckMessage(){
 		code = Serial.read();
 
 		// we have already recieved 8 bytes
-		int num_bytes_to_receive = length - 8;
-		int data_length = num_bytes_to_receive - EOM;
-		byte data[data_length];
+		int num_bytes_to_receive = (int)length - 8;
+		int data_length = num_bytes_to_receive - sizeof(EOM);
+		uint8_t data[data_length];
 
 		if (Serial.available() >= num_bytes_to_receive){
 
@@ -68,16 +71,16 @@ bool USBSerialComms::CheckMessage(){
 			//Fail: not enough bytes
 			return 0;
 		}
-			
+
 
 
 	} else {
 		// Fail: not enough bytes
-		return 0
+		return 0;
 	}
 }
 
-void HandleMessage(){
+bool USBSerialComm::HandleMessage(uint8_t code){
 	if (message_waiting){
 		if (last_code_received == CODE_GET_ALL_IR){
 			GetAllIr();
@@ -89,19 +92,20 @@ void HandleMessage(){
 		}
 
 		// Success: message handled
-		message_waiting = 
+		message_waiting = 1;
 		return 1;
 
-	} else {
+	}
+	else {
 		//Fail: no message to be processed
 		return 0;
 	}
 }
 
-void GetAllIr(){
+void USBSerialComm::GetAllIr(){
 
 }
 
-void SetAllIr(){
+void USBSerialComm::SetAllIr(){
 
 }

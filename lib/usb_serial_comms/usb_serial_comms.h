@@ -1,6 +1,22 @@
 #ifndef USB_SERIAL_COMMS_H_
 #define USB_SERIAL_COMMS_H_
 
+// delimiters
+#define SOM1 0x00
+#define SOM2 0x00
+#define SOM3 0x00
+#define EOM1 0xff
+#define EOM2 0xff
+#define EOM3 0xff
+#define NUM_SOM 3
+#define NUM_EOM 3
+#define NUM_ID 3
+
+// message code lengths (length of data array)
+#define MAX_DATA_LENGTH
+
+// message codes
+#define CODE_GET_ALL_IR 0x01
 
 class USBSerialComms{
 
@@ -9,20 +25,21 @@ class USBSerialComms{
 		~USBSerialComms();
 
 		void SendMessage(byte msg);
-		byte CheckMessage(int modifier);
+		bool CheckMessage();
 
-		void ConstructReadRawResponse();
-		byte read_raw_response[35] = {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-									0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-									0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-									0x00,0x00,0x00,0x00,0x00};
-
-		void ConstructReadFftResponse();
-		byte read_fft_response[35];
+		bool HandleMessage(byte code);
+		// Handlers
+		void GetAllIr();
+		void SetAllIr();
 
 
-		const byte kMessageStart = 0xff; // signifies start of message
-		byte last_bytes_received_[10] = {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+		byte last_data_received_[MAX_DATA_LENGTH];
+		int last_data_length;
+		byte last_code_received;
+		bool message_waiting = 0; // whether or not a received message needs to be processed
+
+		byte SOM[3] = {SOM1,SOM2,SOM3};
+		byte EOM[3] = {EOM1,EOM2,EOM3};
 
 };
 

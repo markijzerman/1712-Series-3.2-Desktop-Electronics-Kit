@@ -7,7 +7,19 @@
 
 #include "dm_high_current.h"
 
-DeviceModuleHigh::DeviceModuleHigh() {
+DeviceModuleHigh::DeviceModuleHigh(const int digital_pin_array[], const int analog_pin_array[]) {
+
+	memcpy(digital_port_pin, digital_pin_array, sizeof(digital_port_pin));
+	memcpy(analog_port_pin, analog_pin_array, sizeof(analog_port_pin));
+
+	pinMode(digital_port_pin[0], OUTPUT);
+	pinMode(digital_port_pin[1], OUTPUT);
+	pinMode(digital_port_pin[2], OUTPUT);
+	pinMode(digital_port_pin[3], OUTPUT);
+	pinMode(digital_port_pin[6], OUTPUT);
+	pinMode(digital_port_pin[7], OUTPUT);
+	pinMode(analog_port_pin[4], INPUT);
+	pinMode(analog_port_pin[5], INPUT);
 
 }
 
@@ -41,21 +53,5 @@ int DeviceModuleHigh::analogReadDM(char port_char){
 	}
 
 	return 0;
-
-}
-
-void DeviceModuleHigh::setPinMapping(const int digital_pin_array[], const int analog_pin_array[]) {
-
-	memcpy(digital_port_pin, digital_pin_array, sizeof(digital_port_pin));
-	memcpy(analog_port_pin, analog_pin_array, sizeof(analog_port_pin));
-
-	pinMode(digital_port_pin[0], OUTPUT);
-	pinMode(digital_port_pin[1], OUTPUT);
-	pinMode(digital_port_pin[2], OUTPUT);
-	pinMode(digital_port_pin[3], OUTPUT);
-	pinMode(digital_port_pin[6], OUTPUT);
-	pinMode(digital_port_pin[7], OUTPUT);
-	pinMode(digital_port_pin[4], INPUT);
-	pinMode(digital_port_pin[5], INPUT);
 
 }

@@ -5,17 +5,15 @@
 * Philip Beesley Architect Inc. / Living Architecture Systems Group
 */
 
-#ifndef DM_HIGH_CURRENT_h
-#define DM_HIGH_CURRENT_h
+#ifndef DM_HIGH_CURRENT_H_
+#define DM_HIGH_CURRENT_H_
 
 #include "Arduino.h"
 
 class DeviceModuleHigh
 {
 public:
-	DeviceModuleHigh();
-	
-	void setPinMapping(const int digital_pin_array[], const int analog_pin_array[]);
+	DeviceModuleHigh(const int digital_pin_array[], const int analog_pin_array[]);
 
 	//Arduino Functions, Accounting for Pin Mapping
 	void digitalWriteDM(char port_char, int port_state);
@@ -29,4 +27,4 @@ private:
 };
 
 
-#endif
+#endif //DM_HIGH_CURRENT_H_

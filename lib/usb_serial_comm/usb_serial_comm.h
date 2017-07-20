@@ -24,20 +24,16 @@
 #define MIN_DATA_LENGTH 11
 #define MAX_DATA_LENGTH 255
 
-// message codes
-// TO DO: PUT INTO CONFIG CONSTANTS
-#define CODE_GET_ALL_IR 0x01
-#define CODE_SET_ALL_IR 0x02
-
 class USBSerialComm{
 
 	public:
 		USBSerialComm();
 		~USBSerialComm();
 
-		void Init();
+		void Init(int baud);
 
-		void SendMessage(uint8_t msg);
+		void SendMessage(uint8_t code);
+		void SendMessage(uint8_t msg, uint8_t data[]);
 		bool CheckMessage();
 
 		bool HandleMessage();
@@ -50,6 +46,7 @@ class USBSerialComm{
 
 		uint8_t SOM[3] = {SOM1,SOM2,SOM3};
 		uint8_t EOM[3] = {EOM1,EOM2,EOM3};
+		uint8_t ID[3] = {0x00,0x00,0x00};
 
 };
 

@@ -25,7 +25,66 @@ void USBSerialComm::Init(int baud){
 
 }
 
-void USBSerialComm::SendMessage(uint8_t msg){}
+void USBSerialComm::SendMessage(uint8_t code){
+	// Send SOM
+	for (int i = 0; i < NUM_SOM; i++){
+		Serial.write(SOM[i]);
+	}
+
+	// Send TeensyID
+	for (int i = 0; i < NUM_ID; i++){
+		Serial.write(ID[i]);
+	}
+
+	// Send message length
+	//        				 SOM       ID       length   code  EOM
+	uint8_t message_length = NUM_SOM + NUM_ID + 1      + 1   + NUM_EOM;
+	Serial.write(message_length);
+
+	// Send code
+	Serial.write(code);
+
+
+	// Send EOM
+	for (int i = 0; i < NUM_EOM; i++){
+		Serial.write(EOM[i]);
+	}	
+
+}
+
+void USBSerialComm::SendMessage(uint8_t code, uint8_t data[]){
+
+	uint8_t data_length = sizeof(data); // = # of elements in data since each element = 1 byte
+
+	// Send SOM
+	for (int i = 0; i < NUM_SOM; i++){
+		Serial.write(SOM[i]);
+	}
+
+	// Send TeensyID
+	for (int i = 0; i < NUM_ID; i++){
+		Serial.write(ID[i]);
+	}
+
+	// Send message length
+	//        				 SOM       ID       length   code   data          EOM
+	uint8_t message_length = NUM_SOM + NUM_ID + 1      + 1    + data_length + NUM_EOM;
+	Serial.write(message_length);
+
+	// Send code
+	Serial.write(code);
+	// Send data
+	for (int i = 0; i < data_length; i++){
+		Serial.write(data[i]);
+	}
+
+	// Send EOM
+	for (int i = 0; i < NUM_EOM; i++){
+		Serial.write(EOM[i]);
+	}	
+
+
+}
 
 
 // CheckMessage
@@ -36,7 +95,7 @@ void USBSerialComm::SendMessage(uint8_t msg){}
 // if requirements fail, returns 0
 bool USBSerialComm::CheckMessage(){
 
-	message_waiting = 0;
+	message_waiting_ = 0;
 
 	// Teensy ID
 	uint8_t t1;
@@ -63,7 +122,7 @@ bool USBSerialComm::CheckMessage(){
 
 		// we have already recieved 8 bytes
 		int num_bytes_to_receive = (int)length - 8;
-		int data_length = num_bytes_to_receive - sizeof(EOM);
+		int data_length = num_bytes_to_receive - NUM_EOM;
 		uint8_t data[data_length];
 
 		if (Serial.available() >= num_bytes_to_receive){
@@ -104,7 +163,7 @@ bool USBSerialComm::HandleMessage(){
 
 		if (last_code_received_ == INSTRUCT_CODE_TEST_COMMUNICATION){
 
-			sendMessage(INSTRUCT_CODE_TEST_COMMUNICATION);
+			SendMessage(INSTRUCT_CODE_TEST_COMMUNICATION);
 
 		} else if (last_code_received_ == INSTRUCT_CODE_TEST_LED){
 
@@ -114,8 +173,8 @@ bool USBSerialComm::HandleMessage(){
 
 			uint8_t channel = last_data_received_[0];
 			uint8_t fade_increment = last_data_received_[1];
-			uint8_t wait_time_hi = last_data_recieved[2];
-			uint8_t wait_time_lo = last_data_received[3];
+			uint8_t wait_time_hi = last_data_received_[2];
+			uint8_t wait_time_lo = last_data_received_[3];
 
 			uint16_t wait_time = wait_time_hi << 8 | wait_time_lo;
 
@@ -125,7 +184,7 @@ bool USBSerialComm::HandleMessage(){
 		}
 
 		// Success: message handled
-		message_waiting = 0;
+		message_waiting_ = 0;
 		return 1;
 
 	}

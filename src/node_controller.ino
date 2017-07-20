@@ -5,6 +5,7 @@
 * Philip Beesley Architect Inc. / Living Architecture Systems Group
 */
 
+#include "config.h"
 #include "dm_high_current.h"
 #include "dm_low_current.h"
 #include "node_ports.h"
@@ -25,9 +26,13 @@ void setup() {
   //
   // WAVTrigger.begin(57600);
 
+  pinMode(13, OUTPUT);
+
 }
 
 void loop() {
+
+  digitalWrite(13, HIGH);
 
 // 	if (Serial.available())	{
 // //		String input_string = "";

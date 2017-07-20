@@ -8,8 +8,7 @@
 #ifndef USB_SERIAL_COMM_H_
 #define USB_SERIAL_COMM_H_
 
-// delimiters
-// TO DO: PUT INTO CONFIG CONSTANTS
+// Delimiters
 #define SOM1 0x00
 #define SOM2 0x00
 #define SOM3 0x00
@@ -41,9 +40,6 @@ class USBSerialComm{
 
 		bool HandleMessage(uint8_t code);
 		// Handlers
-		void GetAllIr();
-		void SetAllIr();
-
 
 		uint8_t last_data_received[MAX_DATA_LENGTH] = { 0 };
 		int last_data_length;

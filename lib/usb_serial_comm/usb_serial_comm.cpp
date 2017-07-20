@@ -8,6 +8,7 @@
 #include <Arduino.h>
 #include <stdint.h>
 #include "usb_serial_comm.h"
+#include "config.h"
 
 USBSerialComm::USBSerialComm(){}
 
@@ -82,10 +83,10 @@ bool USBSerialComm::CheckMessage(){
 
 bool USBSerialComm::HandleMessage(uint8_t code){
 	if (message_waiting){
-		if (last_code_received == CODE_GET_ALL_IR){
-			GetAllIr();
+		if (last_code_received == INSTRUCT_CODE_LED_FADE_ANIMATION){
+
 		} else if (last_code_received == CODE_SET_ALL_IR){
-			SetAllIr();
+
 		} else {
 			//Fail: code not recognized
 			return 0;
@@ -100,12 +101,4 @@ bool USBSerialComm::HandleMessage(uint8_t code){
 		//Fail: no message to be processed
 		return 0;
 	}
-}
-
-void USBSerialComm::GetAllIr(){
-
-}
-
-void USBSerialComm::SetAllIr(){
-
 }

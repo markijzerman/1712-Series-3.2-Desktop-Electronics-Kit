@@ -3,6 +3,10 @@
 * Created By Adam Francey, Kevin Lam, July 5, 2017
 * Released for Desktop Kit
 * Philip Beesley Architect Inc. / Living Architecture Systems Group
+* 
+* Message Format (see related doc [WIP] for details)
+* where <value> is the value represented as a byte:
+* <SOM1><SOM2><SOM3><TeensyId1><TeensyId2><TeensyId3><total number of bytes in message><code><data1>...<dataN><EOM1><EOM2><EOM3>
 */
 
 #include <Arduino.h>
@@ -14,8 +18,22 @@ USBSerialComm::USBSerialComm(){}
 
 USBSerialComm::~USBSerialComm(){}
 
+void USBSerialComm::Init(int baud){
+
+	// USBSerialComm always uses dedicated USB serial
+	Serial.begin(baud);
+
+}
+
 void USBSerialComm::SendMessage(uint8_t msg){}
 
+
+// CheckMessage
+// Reads the serial port for an incoming sequence of bytes
+// if sequence follows requirements of a message defined in docs, returns 1 and
+// updates the following USBSerialComm members:
+// last_data_length, last_code_received, last_data_received, message_waiting
+// if requirements fail, returns 0
 bool USBSerialComm::CheckMessage(){
 
 	message_waiting = 0;
@@ -60,12 +78,12 @@ bool USBSerialComm::CheckMessage(){
 			}
 
 			// Success: EOM found
-			last_data_length = data_length;
-			last_code_received = code;
+			last_data_length_ = data_length;
+			last_code_received_ = code;
 			for (int i = 0; i < data_length; i++){
-				last_data_received[i] = data[i];
+				last_data_received_[i] = data[i];
 			}
-			message_waiting = 1;
+			message_waiting_ = 1;
 			return 1;
 
 		} else {
@@ -81,11 +99,25 @@ bool USBSerialComm::CheckMessage(){
 	}
 }
 
-bool USBSerialComm::HandleMessage(uint8_t code){
-	if (message_waiting){
-		if (last_code_received == INSTRUCT_CODE_LED_FADE_ANIMATION){
+bool USBSerialComm::HandleMessage(){
+	if (message_waiting_){
 
-		} else if (last_code_received == CODE_SET_ALL_IR){
+		if (last_code_received_ == INSTRUCT_CODE_TEST_COMMUNICATION){
+
+			sendMessage(INSTRUCT_CODE_TEST_COMMUNICATION);
+
+		} else if (last_code_received_ == INSTRUCT_CODE_TEST_LED){
+
+			//do something
+
+		} else if (last_code_received_ == INSTRUCT_CODE_LED_FADE_ANIMATION){
+
+			uint8_t channel = last_data_received_[0];
+			uint8_t fade_increment = last_data_received_[1];
+			uint8_t wait_time_hi = last_data_recieved[2];
+			uint8_t wait_time_lo = last_data_received[3];
+
+			uint16_t wait_time = wait_time_hi << 8 | wait_time_lo;
 
 		} else {
 			//Fail: code not recognized
@@ -93,7 +125,7 @@ bool USBSerialComm::HandleMessage(uint8_t code){
 		}
 
 		// Success: message handled
-		message_waiting = 1;
+		message_waiting = 0;
 		return 1;
 
 	}

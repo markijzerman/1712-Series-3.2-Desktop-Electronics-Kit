@@ -35,16 +35,18 @@ class USBSerialComm{
 		USBSerialComm();
 		~USBSerialComm();
 
+		void Init();
+
 		void SendMessage(uint8_t msg);
 		bool CheckMessage();
 
-		bool HandleMessage(uint8_t code);
+		bool HandleMessage();
 		// Handlers
 
-		uint8_t last_data_received[MAX_DATA_LENGTH] = { 0 };
-		int last_data_length;
-		uint8_t last_code_received;
-		bool message_waiting = 0; // whether or not a received message needs to be processed
+		uint8_t last_data_received_[MAX_DATA_LENGTH] = { 0 };
+		int last_data_length_;
+		uint8_t last_code_received_;
+		bool message_waiting_ = 0; // whether or not a received message needs to be processed
 
 		uint8_t SOM[3] = {SOM1,SOM2,SOM3};
 		uint8_t EOM[3] = {EOM1,EOM2,EOM3};

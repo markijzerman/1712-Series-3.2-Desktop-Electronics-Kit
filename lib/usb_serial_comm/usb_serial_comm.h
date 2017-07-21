@@ -9,9 +9,9 @@
 #define USB_SERIAL_COMM_H_
 
 // Delimiters
-#define SOM1 0x00
-#define SOM2 0x00
-#define SOM3 0x00
+#define SOM1 0xff
+#define SOM2 0xee
+#define SOM3 0xdd
 #define EOM1 0xff
 #define EOM2 0xff
 #define EOM3 0xff
@@ -46,7 +46,7 @@ class USBSerialComm{
 
 		uint8_t SOM[3] = {SOM1,SOM2,SOM3};
 		uint8_t EOM[3] = {EOM1,EOM2,EOM3};
-		uint8_t ID[3] = {0x00,0x00,0x00};
+		uint8_t ID[3] = {0x09,0x09,0x09};
 
 };
 

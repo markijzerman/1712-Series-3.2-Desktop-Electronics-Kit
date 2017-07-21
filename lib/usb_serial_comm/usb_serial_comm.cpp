@@ -3,7 +3,7 @@
 * Created By Adam Francey, Kevin Lam, July 5, 2017
 * Released for Desktop Kit
 * Philip Beesley Architect Inc. / Living Architecture Systems Group
-* 
+*
 * Message Format (see related doc [WIP] for details)
 * where <value> is the value represented as a byte:
 * <SOM1><SOM2><SOM3><TeensyId1><TeensyId2><TeensyId3><total number of bytes in message><code><data1>...<dataN><EOM1><EOM2><EOM3>
@@ -48,40 +48,41 @@ void USBSerialComm::SendMessage(uint8_t code){
 	// Send EOM
 	for (int i = 0; i < NUM_EOM; i++){
 		Serial.write(EOM[i]);
-	}	
+	}
 
 }
 
+
 void USBSerialComm::SendMessage(uint8_t code, uint8_t data[]){
 
-	uint8_t data_length = sizeof(data); // = # of elements in data since each element = 1 byte
+    uint8_t data_length = sizeof(data); // = # of elements in data since each element = 1 byte
 
-	// Send SOM
-	for (int i = 0; i < NUM_SOM; i++){
-		Serial.write(SOM[i]);
-	}
+    // Send SOM
+    for (int i = 0; i < NUM_SOM; i++){
+        Serial.write(SOM[i]);
+    }
 
-	// Send TeensyID
-	for (int i = 0; i < NUM_ID; i++){
-		Serial.write(ID[i]);
-	}
+    // Send TeensyID
+    for (int i = 0; i < NUM_ID; i++){
+        Serial.write(ID[i]);
+    }
 
-	// Send message length
-	//        				 SOM       ID       length   code   data          EOM
-	uint8_t message_length = NUM_SOM + NUM_ID + 1      + 1    + data_length + NUM_EOM;
-	Serial.write(message_length);
+    // Send message length
+    //                         SOM       ID       length   code   data          EOM
+    uint8_t message_length = NUM_SOM + NUM_ID + 1      + 1    + data_length + NUM_EOM;
+    Serial.write(message_length);
 
-	// Send code
-	Serial.write(code);
-	// Send data
-	for (int i = 0; i < data_length; i++){
-		Serial.write(data[i]);
-	}
+    // Send code
+    Serial.write(code);
+    // Send data
+    for (int i = 0; i < data_length; i++){
+        Serial.write(data[i]);
+    }
 
-	// Send EOM
-	for (int i = 0; i < NUM_EOM; i++){
-		Serial.write(EOM[i]);
-	}	
+    // Send EOM
+    for (int i = 0; i < NUM_EOM; i++){
+        Serial.write(EOM[i]);
+    }
 
 
 }
@@ -108,17 +109,35 @@ bool USBSerialComm::CheckMessage(){
 
 	if (Serial.available()>=MIN_DATA_LENGTH){ // 11 = minimum message length
 
+		Serial.write(240);
+		Serial.write(120);
 		// check for SOM
 		for (int s = 0; s < NUM_SOM; s++){
-			if (Serial.read() != SOM[s]){return 0;} // Fail: no SOM
+			// if (Serial.read() != SOM[s]){
+			// 	return 0;
+			// } // Fail: no SOM
+			uint8_t cur_SOM = Serial.read();
+			Serial.write(s);
 		}
 
 		// read Teensy ID, length, coded
 		t1 = Serial.read();
 		t2 = Serial.read();
 		t3 = Serial.read();
+
+		Serial.write(t1);
+		Serial.write(t2);
+		Serial.write(t3);
+
+		// if ((((t1 << 16) | (t2 << 8)) | t3) != 1000000){
+		// 	return 0;
+		// }
+
 		length = Serial.read();
 		code = Serial.read();
+
+		Serial.write((int)length);
+		Serial.write(code);
 
 		// we have already recieved 8 bytes
 		int num_bytes_to_receive = (int)length - 8;
@@ -129,11 +148,13 @@ bool USBSerialComm::CheckMessage(){
 
 			for (int i = 0; i < data_length; i++){
 				data[i] = Serial.read();
+				Serial.write(data[i]);
 			}
 
 			// check for EOM
 			for (int e = 0; e < NUM_EOM; e++){
-				if (Serial.read() != EOM[e]){return 0;} // Fail: no EOM
+				// if (Serial.read() != EOM[e]){return 0;} // Fail: no EOM
+				Serial.write(Serial.read());
 			}
 
 			// Success: EOM found

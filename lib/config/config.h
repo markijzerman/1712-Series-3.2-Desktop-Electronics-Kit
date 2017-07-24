@@ -4,6 +4,7 @@
 class Constants {
 
   //Instruction Codes and Reponse codes from Pi and Node
+  #define INSTRUCT_CODE_GET_TEENSY_ID                       0x00
   #define INSTRUCT_CODE_TEST_COMMUNICATION                  0x01
   #define INSTRUCT_CODE_TEST_LED                            0x02
   #define INSTRUCT_CODE_TEST_ALL_LED                        0x03

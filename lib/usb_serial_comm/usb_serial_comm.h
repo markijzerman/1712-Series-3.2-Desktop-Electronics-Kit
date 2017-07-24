@@ -12,9 +12,9 @@
 #define SOM1 0xff
 #define SOM2 0xee
 #define SOM3 0xdd
-#define EOM1 0xff
-#define EOM2 0xff
-#define EOM3 0xff
+#define EOM1 0xaa
+#define EOM2 0xbb
+#define EOM3 0xcc
 #define NUM_SOM 3
 #define NUM_EOM 3
 #define NUM_ID 3
@@ -28,9 +28,8 @@ class USBSerialComm{
 
 	public:
 		USBSerialComm();
+		USBSerialComm(int baud_rate);
 		~USBSerialComm();
-
-		void Init(int baud);
 
 		void SendMessage(uint8_t code);
 		void SendMessage(uint8_t msg, uint8_t data[]);

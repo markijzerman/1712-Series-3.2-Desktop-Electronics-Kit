@@ -14,16 +14,20 @@
 #include "usb_serial_comm.h"
 #include "config.h"
 
-USBSerialComm::USBSerialComm(){}
 
-USBSerialComm::~USBSerialComm(){}
+USBSerialComm::USBSerialComm(){
 
-void USBSerialComm::Init(int baud){
-
-	// USBSerialComm always uses dedicated USB serial
-	Serial.begin(baud);
+	Serial.begin(57600);
 
 }
+
+USBSerialComm::USBSerialComm(int baud_rate){
+
+	Serial.begin(baud_rate);
+
+}
+
+USBSerialComm::~USBSerialComm(){}
 
 void USBSerialComm::SendMessage(uint8_t code){
 	// Send SOM
@@ -98,26 +102,29 @@ bool USBSerialComm::CheckMessage(){
 
 	message_waiting_ = 0;
 
-	// Teensy ID
-	uint8_t t1;
-	uint8_t t2;
-	uint8_t t3;
-
-	// modifiers
-	uint8_t length;
-	uint8_t code;
-
 	if (Serial.available()>=MIN_DATA_LENGTH){ // 11 = minimum message length
 
-		Serial.write(240);
-		Serial.write(120);
+		uint8_t received_SOM[NUM_SOM];
+
+		// Teensy ID
+		uint8_t t1;
+		uint8_t t2;
+		uint8_t t3;
+
+		// modifiers
+		uint8_t length;
+		uint8_t code;
+
+		uint8_t received_EOM[NUM_EOM];
+
 		// check for SOM
+
 		for (int s = 0; s < NUM_SOM; s++){
 			// if (Serial.read() != SOM[s]){
 			// 	return 0;
 			// } // Fail: no SOM
-			uint8_t cur_SOM = Serial.read();
-			Serial.write(s);
+			received_SOM[s] = Serial.read();
+
 		}
 
 		// read Teensy ID, length, coded
@@ -125,36 +132,27 @@ bool USBSerialComm::CheckMessage(){
 		t2 = Serial.read();
 		t3 = Serial.read();
 
-		Serial.write(t1);
-		Serial.write(t2);
-		Serial.write(t3);
-
-		// if ((((t1 << 16) | (t2 << 8)) | t3) != 1000000){
-		// 	return 0;
-		// }
-
 		length = Serial.read();
 		code = Serial.read();
-
-		Serial.write((int)length);
-		Serial.write(code);
 
 		// we have already recieved 8 bytes
 		int num_bytes_to_receive = (int)length - 8;
 		int data_length = num_bytes_to_receive - NUM_EOM;
 		uint8_t data[data_length];
 
+		//FIX THIS DELAY< NECESSARY ATM
+		delay(50);
+
 		if (Serial.available() >= num_bytes_to_receive){
 
 			for (int i = 0; i < data_length; i++){
 				data[i] = Serial.read();
-				Serial.write(data[i]);
 			}
 
 			// check for EOM
 			for (int e = 0; e < NUM_EOM; e++){
 				// if (Serial.read() != EOM[e]){return 0;} // Fail: no EOM
-				Serial.write(Serial.read());
+				received_EOM[e] = Serial.read();
 			}
 
 			// Success: EOM found
@@ -163,7 +161,27 @@ bool USBSerialComm::CheckMessage(){
 			for (int i = 0; i < data_length; i++){
 				last_data_received_[i] = data[i];
 			}
+
 			message_waiting_ = 1;
+
+			//Write to Serial what was received and stored
+			for(int i = 0; i < NUM_SOM;i++){
+				Serial.write(received_SOM[i]);
+			}
+			Serial.write(t1);
+			Serial.write(t2);
+			Serial.write(t3);
+			Serial.write(length);
+			Serial.write(code);
+
+			for (int i = 0; i < data_length; i++){
+				Serial.write(data[i]);
+			}
+			for(int i = 0; i < NUM_EOM;i++){
+				Serial.write(received_EOM[i]);
+			}
+
+
 			return 1;
 
 		} else {

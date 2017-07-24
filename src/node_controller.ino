@@ -19,17 +19,18 @@
 // SoftwareSerial WAVTriggerSerial(3,4); // serial pins connected to P0;
 // wav_trigger WAVTrigger;
 
-USBSerialComm ser;
+USBSerialComm ser(57600);
 
 void setup() {
-
-  ser.Init(9600);
 
 }
 
 
 void loop() {
 
-  ser.CheckMessage();
+
+  if(ser.CheckMessage()){
+      ser.SendMessage(INSTRUCT_CODE_TEST_COMMUNICATION);
+  }
 
 }

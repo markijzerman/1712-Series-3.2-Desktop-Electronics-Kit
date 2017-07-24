@@ -57,9 +57,7 @@ void USBSerialComm::SendMessage(uint8_t code){
 }
 
 
-void USBSerialComm::SendMessage(uint8_t code, uint8_t data[]){
-
-    uint8_t data_length = sizeof(data); // = # of elements in data since each element = 1 byte
+void USBSerialComm::SendMessage(uint8_t code, uint8_t data[], int data_size){
 
     // Send SOM
     for (int i = 0; i < NUM_SOM; i++){
@@ -73,13 +71,13 @@ void USBSerialComm::SendMessage(uint8_t code, uint8_t data[]){
 
     // Send message length
     //                         SOM       ID       length   code   data          EOM
-    uint8_t message_length = NUM_SOM + NUM_ID + 1      + 1    + data_length + NUM_EOM;
+    uint8_t message_length = NUM_SOM + NUM_ID + 1      + 1 + data_size+ NUM_EOM;
     Serial.write(message_length);
 
     // Send code
     Serial.write(code);
     // Send data
-    for (int i = 0; i < data_length; i++){
+    for (int i = 0; i < data_size; i++){
         Serial.write(data[i]);
     }
 
@@ -165,21 +163,21 @@ bool USBSerialComm::CheckMessage(){
 			message_waiting_ = 1;
 
 			//Write to Serial what was received and stored
-			for(int i = 0; i < NUM_SOM;i++){
-				Serial.write(received_SOM[i]);
-			}
-			Serial.write(t1);
-			Serial.write(t2);
-			Serial.write(t3);
-			Serial.write(length);
-			Serial.write(code);
-
-			for (int i = 0; i < data_length; i++){
-				Serial.write(data[i]);
-			}
-			for(int i = 0; i < NUM_EOM;i++){
-				Serial.write(received_EOM[i]);
-			}
+			// for(int i = 0; i < NUM_SOM;i++){
+			// 	Serial.write(received_SOM[i]);
+			// }
+			// Serial.write(t1);
+			// Serial.write(t2);
+			// Serial.write(t3);
+			// Serial.write(length);
+			// Serial.write(code);
+			//
+			// for (int i = 0; i < data_length; i++){
+			// 	Serial.write(data[i]);
+			// }
+			// for(int i = 0; i < NUM_EOM;i++){
+			// 	Serial.write(received_EOM[i]);
+			// }
 
 
 			return 1;

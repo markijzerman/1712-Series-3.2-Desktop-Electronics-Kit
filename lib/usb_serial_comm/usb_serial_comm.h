@@ -32,7 +32,7 @@ class USBSerialComm{
 		~USBSerialComm();
 
 		void SendMessage(uint8_t code);
-		void SendMessage(uint8_t msg, uint8_t data[]);
+		void SendMessage(uint8_t msg, uint8_t data[], int data_size);
 		bool CheckMessage();
 
 		bool HandleMessage();

@@ -46,6 +46,9 @@ http://arduiniana.org.
 
 #if defined(__MK20DX128__) || defined(__MK20DX256__) || defined(__MKL26Z64__) || defined(__MK64FX512__) || defined(__MK66FX1M0__)
 
+
+// Added by afrancey: empty constructor
+SoftwareSerial::SoftwareSerial(){}
 SoftwareSerial::SoftwareSerial(uint8_t rxPin, uint8_t txPin, bool inverse_logic /* = false */)
 {
 	buffer_overflow = false;
@@ -67,6 +70,32 @@ SoftwareSerial::SoftwareSerial(uint8_t rxPin, uint8_t txPin, bool inverse_logic 
 	txreg = portOutputRegister(digitalPinToPort(txPin));
 	rxreg = portInputRegister(digitalPinToPort(rxPin));
 	cycles_per_bit = 0;
+}
+
+//
+// Added by afrancey
+//
+void SoftwareSerial::setPins(uint8_t rxPin, uint8_t txPin, bool inverse_logic /* = false */)
+{
+    buffer_overflow = false;
+    if (rxPin == 0 && txPin == 1) {
+        port = &Serial1;
+        return;
+    } else if (rxPin == 9 && txPin == 10) {
+        port = &Serial2;
+        return;
+    } else if (rxPin == 7 && txPin == 8) {
+        port = &Serial3;
+        return;
+    }
+    port = NULL;
+    pinMode(txPin, OUTPUT);
+    pinMode(rxPin, INPUT_PULLUP);
+    txpin = txPin;
+    rxpin = rxPin;
+    txreg = portOutputRegister(digitalPinToPort(txPin));
+    rxreg = portInputRegister(digitalPinToPort(rxPin));
+    cycles_per_bit = 0;
 }
 
 void SoftwareSerial::begin(unsigned long speed)
@@ -464,6 +493,8 @@ ISR(PCINT3_vect)
 //
 // Constructor
 //
+// Added by afrancey: empty constructor
+SoftwareSerial::SoftwareSerial(){}
 SoftwareSerial::SoftwareSerial(uint8_t receivePin, uint8_t transmitPin, bool inverse_logic /* = false */) : 
   _rx_delay_centering(0),
   _rx_delay_intrabit(0),
@@ -483,6 +514,18 @@ SoftwareSerial::~SoftwareSerial()
 {
   end();
 }
+
+void SoftwareSerial::setPins(uint8_t receivePin, uint8_t transmitPin, bool inverse_logic /* = false */) 
+{
+  _rx_delay_centering = 0;
+  _rx_delay_intrabit = 0;
+  _rx_delay_stopbit = 0;
+  _tx_delay = 0;
+  _buffer_overflow = false;
+  _inverse_logic = inverse_logic;
+  setTX(transmitPin);
+  setRX(receivePin);
+})
 
 void SoftwareSerial::setTX(uint8_t tx)
 {

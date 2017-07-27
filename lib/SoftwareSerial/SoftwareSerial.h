@@ -50,8 +50,10 @@ http://arduiniana.org.
 class SoftwareSerial : public Stream
 {
 public:
+    SoftwareSerial(); // added by afrancey
 	SoftwareSerial(uint8_t rxPin, uint8_t txPin, bool inverse_logic = false);
 	~SoftwareSerial() { end(); }
+  void setPins(uint8_t rxPin, uint8_t txPin, bool inverse_logic = false); // added by afrancey
 	void begin(unsigned long speed);
 	void end();
 	bool listen() { return true; }
@@ -111,8 +113,10 @@ private:
 
 public:
   // public methods
+  SoftwareSerial(); // added by afrancey
   SoftwareSerial(uint8_t receivePin, uint8_t transmitPin, bool inverse_logic = false);
   ~SoftwareSerial();
+  void setPins(uint8_t receivePin, uint8_t transmitPin, bool inverse_logic = false); // added by afrancey
   void begin(long speed);
   bool listen();
   void end();

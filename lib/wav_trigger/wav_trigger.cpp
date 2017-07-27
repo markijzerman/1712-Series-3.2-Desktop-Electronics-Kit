@@ -1,93 +1,114 @@
 #include "wav_trigger.h"
 // #include "pindefs.h"
-#include <SoftwareSerial.h>
-#include <Adafruit_NeoPixel.h>
-// #include "Toolbox.h"
+#include <SoftwareSerial_Custom.h>
+#include <Arduino.h>
 
-// Toolbox wavtools = Toolbox();
-//
-// WAVTrigger::WAVTrigger(){
-//   }
-//
-//
-// WAVTrigger::~WAVTrigger(){
-//     //wavtools.flashLed(13,30,20);
-// }
-//
-// // play a track
-// // trk: track number
-// // code: arguments like TRK_PLAY_POLY as defined in pindefs.h
-// void WAVTrigger::trackControl(int trk, int code){
-//   buffer[0] = SOM1;
-//   buffer[1] = SOM2;
-//   buffer[2] = 0x08;
-//   buffer[3] = CMD_TRACK_CONTROL;
-//   buffer[4] = (uint8_t)code;
-//   buffer[5] = (uint8_t)trk;
-//   buffer[6] = (uint8_t)(trk>>8);
-//   buffer[7] = EOM;
-//
-//   buffer_size = kTrackControlBufferSize;
-//   //Serial.print("play sound track: ");
-//   //Serial.println(trk);
-//
-//
-// }
-//
-// // sets the volume of the track
-// // TO DO: find bounds of gain
-// // may be -10 to 10
-// void WAVTrigger::masterGain(int gain) {
-//
-//   unsigned short vol;
-//
-//   buffer[0] = SOM1;
-//   buffer[1] = SOM2;
-//   buffer[2] = 0x07;
-//   buffer[3] = CMD_MASTER_VOLUME;
-//   vol = (unsigned short)gain;
-//   buffer[4] = (uint8_t)vol;
-//   buffer[5] = (uint8_t)(vol >> 8);
-//   buffer[6] = EOM;
-//
-//   buffer_size = kMasterGainBufferSize;
-// }
-//
-// void WAVTrigger::trackGain(int trk, int gain) {
-//
-//   unsigned short vol;
-//
-//   buffer[0] = SOM1;
-//   buffer[1] = SOM2;
-//   buffer[2] = 0x09;
-//   buffer[3] = CMD_TRACK_VOLUME;
-//   buffer[4] = (uint8_t)trk;
-//   buffer[5] = (uint8_t)(trk >> 8);
-//   vol = (unsigned short)gain;
-//   buffer[6] = (uint8_t)vol;
-//   buffer[7] = (uint8_t)(vol >> 8);
-//   buffer[8] = EOM;
-//
-//   buffer_size = kTrackGainBufferSize;
-// }
-//
-// void WAVTrigger::trackFade(int trk, int gain, int time, bool stopFlag) {
-//
-//   unsigned short vol;
-//
-//   buffer[0] = SOM1;
-//   buffer[1] = SOM2;
-//   buffer[2] = 0x0c;
-//   buffer[3] = CMD_TRACK_FADE;
-//   buffer[4] = (uint8_t)trk;
-//   buffer[5] = (uint8_t)(trk >> 8);
-//   vol = (unsigned short)gain;
-//   buffer[6] = (uint8_t)vol;
-//   buffer[7] = (uint8_t)(vol >> 8);
-//   buffer[8] = (uint8_t)time;
-//   buffer[9] = (uint8_t)(time >> 8);
-//   buffer[10] = stopFlag;
-//   buffer[11] = EOM;
-//
-//   buffer_size = kFadeBufferSize;
-// }
+WAVTrigger::WAVTrigger(int rx_pin, int tx_pin){
+    // for use with software serial
+    ser_type_ = 0; // softwareserial
+    ser_soft_.setPins(rx_pin,tx_pin);
+}
+
+WAVTrigger::WAVTrigger(int hardware_serial){
+    ser_type_ = hardware_serial;
+    if (ser_type_ == 1){
+        ser_hard_ = Serial1;
+    } else if (ser_type_ == 2){
+        ser_hard_ = Serial2;
+    } else if (ser_type_ == 3){
+        ser_hard_ = Serial3;
+    }
+}
+
+
+WAVTrigger::~WAVTrigger(){
+     //wavtools.flashLed(13,30,20);
+}
+
+void WAVTrigger::sendByteArray(uint8_t bytes[], int len){
+
+    if (ser_type_ == 0){
+        ser_soft_.write(bytes, len);
+    } else {
+        ser_hard_.write(bytes, len);
+    }
+}
+
+// play a track
+// trk: track number
+// code: arguments like TRK_PLAY_POLY as defined in pindefs.h
+void WAVTrigger::trackControl(int trk, int code){
+    uint8_t txbuf[8];
+    txbuf[0] = SOM1;
+    txbuf[1] = SOM2;
+    txbuf[2] = 0x08;
+    txbuf[3] = CMD_TRACK_CONTROL;
+    txbuf[4] = (uint8_t)code;
+    txbuf[5] = (uint8_t)trk;
+    txbuf[6] = (uint8_t)(trk>>8);
+    txbuf[7] = EOM;
+    
+    sendByteArray(txbuf,8);
+    //Serial.print("play sound track: ");
+    //Serial.println(trk);
+
+
+}
+
+// sets the volume of the track
+// TO DO: find bounds of gain
+// may be -10 to 10
+void WAVTrigger::masterGain(int gain) {
+    uint8_t txbuf[7];
+    unsigned short vol;
+    
+    txbuf[0] = SOM1;
+    txbuf[1] = SOM2;
+    txbuf[2] = 0x07;
+    txbuf[3] = CMD_MASTER_VOLUME;
+    vol = (unsigned short)gain;
+    txbuf[4] = (uint8_t)vol;
+    txbuf[5] = (uint8_t)(vol >> 8);
+    txbuf[6] = EOM;
+    
+    sendByteArray(txbuf,7);
+}
+
+void WAVTrigger::trackGain(int trk, int gain) {
+    uint8_t txbuf[9];
+    unsigned short vol;
+    
+    txbuf[0] = SOM1;
+    txbuf[1] = SOM2;
+    txbuf[2] = 0x09;
+    txbuf[3] = CMD_TRACK_VOLUME;
+    txbuf[4] = (uint8_t)trk;
+    txbuf[5] = (uint8_t)(trk >> 8);
+    vol = (unsigned short)gain;
+    txbuf[6] = (uint8_t)vol;
+    txbuf[7] = (uint8_t)(vol >> 8);
+    txbuf[8] = EOM;
+    
+    sendByteArray(txbuf,9);
+}
+
+void WAVTrigger::trackFade(int trk, int gain, int time, bool stopFlag) {
+    uint8_t txbuf[12];
+    unsigned short vol;
+    
+    txbuf[0] = SOM1;
+    txbuf[1] = SOM2;
+    txbuf[2] = 0x0c;
+    txbuf[3] = CMD_TRACK_FADE;
+    txbuf[4] = (uint8_t)trk;
+    txbuf[5] = (uint8_t)(trk >> 8);
+    vol = (unsigned short)gain;
+    txbuf[6] = (uint8_t)vol;
+    txbuf[7] = (uint8_t)(vol >> 8);
+    txbuf[8] = (uint8_t)time;
+    txbuf[9] = (uint8_t)(time >> 8);
+    txbuf[10] = stopFlag;
+    txbuf[11] = EOM;
+    
+    sendByteArray(txbuf,12);
+}

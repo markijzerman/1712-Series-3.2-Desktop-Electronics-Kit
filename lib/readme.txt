@@ -34,3 +34,5 @@ include paths and build them.
 
 More information about PlatformIO Library Dependency Finder
 - http://docs.platformio.org/page/librarymanager/ldf.html
+
+IMPORTANT NOTE: The SoftwareSerial library will only work with the Teensy3 avr library!

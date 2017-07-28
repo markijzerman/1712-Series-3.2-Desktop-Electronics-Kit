@@ -20,6 +20,14 @@ WAVTrigger::WAVTrigger(int hardware_serial){
     }
 }
 
+void WAVTrigger::begin(int baudrate){
+    if (ser_type_ == 0){
+        ser_soft_.begin(baudrate);
+    } else {
+        ser_hard_.begin(baudrate);
+    }  
+}
+
 
 WAVTrigger::~WAVTrigger(){
      //wavtools.flashLed(13,30,20);

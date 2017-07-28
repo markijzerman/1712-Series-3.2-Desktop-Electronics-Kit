@@ -10,6 +10,7 @@ class WAVTrigger{
         WAVTrigger(int rx_pin, int tx_pin);
         WAVTrigger(int hardware_serial);
         ~WAVTrigger();
+        void begin(int baudrate = 57600);
         void trackControl(int trk, int code);
         void masterGain(int gain);
         void trackFade(int trk, int gain, int time, bool stopFlag);
@@ -20,10 +21,6 @@ class WAVTrigger{
         
         // CONSTANTS
         // to be moved into config if not already there
-    private:
-
-        int ser_type_;
-        void sendByteArray(uint8_t bytes[], int len);
         // WAV Trigger commands
         const int TRK_PLAY_SOLO = 0;
         const int TRK_PLAY_POLY = 1;
@@ -35,6 +32,10 @@ class WAVTrigger{
         const int CMD_MASTER_VOLUME = 5;
         const int CMD_TRACK_VOLUME = 8;
         const int CMD_TRACK_FADE = 10;
+    private:
+
+        int ser_type_;
+        void sendByteArray(uint8_t bytes[], int len);
         const uint8_t SOM1 = 0xf0;
         const uint8_t SOM2 = 0xaa;
         const uint8_t EOM = 0x55;

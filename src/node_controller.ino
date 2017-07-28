@@ -5,57 +5,30 @@
 * Philip Beesley Architect Inc. / Living Architecture Systems Group
 */
 
-#include "dm_high_current.h"
-#include "dm_low_current.h"
-#include "node_ports.h"
+//#include "node_ports.h"
 #include "Arduino.h"
 #include "wav_trigger.h"
-#include "sound_detector.h"
-#include "usb_serial_comm.h"
 
-// Port2 port2(kPort2BoardType);
-//
-// SoftwareSerial WAVTriggerSerial(3,4); // serial pins connected to P0;
-// wav_trigger WAVTrigger;
+// Initalize a WAV trigger attached to hardware Serial1 (or 2, 3)
+WAVTrigger wav_trigger_hard(1);
+
+// Or initialize a WAV trigger to use a software serial
+// rx: pin 3
+// tx: pin 4
+WAVTrigger wav_trigger_soft(3,4);
 
 void setup() {
 
-  // pinMode(9, OUTPUT);
-	// Serial.begin(kBaudRate);
-  //
-  // WAVTrigger.begin(57600);
-
+    // begin the serial ports
+    wav_trigger_hard.begin();
+    wav_trigger_soft.begin();
 }
 
 void loop() {
-
-// 	if (Serial.available())	{
-// //		String input_string = "";
-//     int input_integer;
-// 		while (Serial.available()){
-// //			char input_char = Serial.read();
-// //			input_string += input_char;
-//       input_integer = Serial.read();
-// 		}
-// 		if (input_integer) {
-//       Serial.print("Input Integer: ");
-//       Serial.println(input_integer);
-// 			port2.DMHigh.writeActuator(kActuatorPort, 1);
-// 			delay(1000);
-// 			port2.DMHigh.writeActuator(kActuatorPort, 0);
-// 			delay(1000);
-// 		}
-// 	}
-// 	if (port2.DMHigh.readAnalog(kSensorPort) > 300) {
-// 		Serial.println(port2.DMHigh.readAnalog(kSensorPort));
-// 	}
-//
-//
-//  //play a sound
-//  WAVTrigger.trackControl(1, TRK_PLAY_POLY)
-//  WAVTriggerSerial.write(WAVTrigger.buffer,WAVTrigger.buffer_size)
-//
-//
-//   delay(500);
+    // play the first track every 2 seconds, alternating triggers
+    delay(2000);
+    wav_trigger_hard.trackControl(1,wav_trigger_hard.TRK_PLAY_POLY);
+    delay(2000);
+    wav_trigger_soft.trackControl(1,wav_trigger_soft.TRK_PLAY_POLY);
 
 }

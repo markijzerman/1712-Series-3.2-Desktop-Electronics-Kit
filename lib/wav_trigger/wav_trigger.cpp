@@ -1,6 +1,6 @@
 #include "wav_trigger.h"
 // #include "pindefs.h"
-#include <SoftwareSerial_Custom.h>
+#include <SoftwareSerial.h>
 #include <Arduino.h>
 
 WAVTrigger::WAVTrigger(int rx_pin, int tx_pin){

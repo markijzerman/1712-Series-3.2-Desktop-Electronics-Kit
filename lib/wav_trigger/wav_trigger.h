@@ -1,4 +1,4 @@
-#include <SoftwareSerial_Custom.h>
+#include <SoftwareSerial.h>
 #include <Arduino.h>
 #include "HardwareSerial.h"
 #ifndef __WAV__

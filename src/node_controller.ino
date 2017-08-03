@@ -5,32 +5,31 @@
 * Philip Beesley Architect Inc. / Living Architecture Systems Group
 */
 
-#include "config.h"
-#include "dm_high_current.h"
-#include "dm_low_current.h"
-#include "node_ports.h"
+//#include "node_ports.h"
 #include "Arduino.h"
 #include "wav_trigger.h"
-#include "sound_detector.h"
-#include "usb_serial_comm.h"
 
-// Port2 port2(kPort2BoardType);
-//
-// SoftwareSerial WAVTriggerSerial(3,4); // serial pins connected to P0;
-// wav_trigger WAVTrigger;
+// Initalize a WAV trigger attached to hardware Serial1 (or 2, 3)
+WAVTrigger wav_trigger_hard(1);
 
-USBSerialComm ser(57600);
+// Or initialize a WAV trigger to use a software serial
+// rx: pin 3
+// tx: pin 4
+WAVTrigger wav_trigger_soft(3,4);
 
 void setup() {
 
+    // begin the serial ports
+    wav_trigger_hard.begin();
+    wav_trigger_soft.begin();
 }
 
 
 void loop() {
-
-
-  if(ser.CheckMessage()){
-      ser.SendMessage(INSTRUCT_CODE_TEST_COMMUNICATION);
-  }
+    // play the first track every 2 seconds, alternating triggers
+    delay(2000);
+    wav_trigger_hard.trackControl(1,wav_trigger_hard.TRK_PLAY_POLY);
+    delay(2000);
+    wav_trigger_soft.trackControl(1,wav_trigger_soft.TRK_PLAY_POLY);
 
 }

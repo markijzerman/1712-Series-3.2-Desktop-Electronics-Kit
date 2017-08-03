@@ -26,7 +26,6 @@ DeviceModuleHigh::DeviceModuleHigh(const int digital_pin_array[], const int anal
 void DeviceModuleHigh::digitalWriteDM(char port_char, int port_state) {
 
 	int pin_number = -1;
-
 	if (port_char == 'C') { pin_number = digital_port_pin[0]; }
 	else if (port_char == 'D') { pin_number = digital_port_pin[1]; }
 	else if (port_char == 'E') { pin_number = digital_port_pin[2]; }
@@ -35,7 +34,7 @@ void DeviceModuleHigh::digitalWriteDM(char port_char, int port_state) {
 	else if (port_char == 'H') { pin_number = digital_port_pin[7]; }
 
 	if (pin_number != -1)  {
-		digitalWrite(digital_port_pin[pin_number], port_state);
+		digitalWrite(pin_number, port_state);
 	}
 
 }

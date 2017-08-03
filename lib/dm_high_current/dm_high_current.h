@@ -20,10 +20,9 @@ public:
 	void analogWriteDM(char port_char, int port_state);
 	int analogReadDM(char port_char);
 
-
 private:
-	int digital_port_pin[8];
 	int analog_port_pin[8];
+	int digital_port_pin[8];
 };
 
 

@@ -14,50 +14,50 @@
 
 class Port0
 {
+private:
+	const int kDigitalPortPin[8] = { 3, 4, 5, 20, 27, A11, 16, 17 };
+	const int kAnalogPortPin[8] = { 3, 4, 5, A6, A16, A11, A2, A3 };
 public:
 	Port0() : DMHigh(kDigitalPortPin, kAnalogPortPin), DMLow(kDigitalPortPin, kAnalogPortPin){}
 	//JackPlateBoard JackPlate;
 	DeviceModuleHigh DMHigh;
 	DeviceModuleLow DMLow;
-private:
-	const int kDigitalPortPin[8] = { 3, 4, 5, 20, 27, A11, 16, 17 };
-	const int kAnalogPortPin[8] = { 3, 4, 5, A6, A16, A11, A2, A3 };
 };
 
 class Port1
 {
+private:
+	const int kDigitalPortPin[8] = { 25, 32, 6, 21, 28, A13, 26, 31 };
+	const int kAnalogPortPin[8] = { 25, 32, 6, A7, A17, A13, A15, A20 };
 public:
 	Port1() : DMHigh(kDigitalPortPin, kAnalogPortPin), DMLow(kDigitalPortPin, kAnalogPortPin){}
 	//JackPlateBoard JackPlate;
 	DeviceModuleHigh DMHigh;
 	DeviceModuleLow DMLow;
-private:
-	const int kDigitalPortPin[8] = { 25, 32, 6, 21, 28, A13, 26, 31 };
-	const int kAnalogPortPin[8] = { 25, 32, 6, A7, A17, A13, A15, A20 };
 };
 
 class Port2
 {
+private:
+	const int kDigitalPortPin[8] = { 9, 10, 22, 23, 14, 15, 29, 30 };
+	const int kAnalogPortPin[8] = { 9, 10, A8, A9, A0, A1, A18, A19 };
 public:
 	Port2() : DMHigh(kDigitalPortPin, kAnalogPortPin), DMLow(kDigitalPortPin, kAnalogPortPin){}
 	//JackPlateBoard JackPlate;
 	DeviceModuleHigh DMHigh;
 	DeviceModuleLow DMLow;
-private:
-	const int kDigitalPortPin[8] = { 9, 10, 22, 23, 14, 15, 29, 30 };
-	const int kAnalogPortPin[8] = { 9, 10, A8, A9, A0, A1, A18, A19 };
 };
 
 class PortS
 {
+private:
+	const int kDigitalPortPin[8] = { 7, 8, 33, 11, 12, 13, 18, 19 };
+	const int kAnalogPortPin[8] = { 7, 8, 33, 11, 12, 13, A4, A5 };
 public:
 	PortS() : DMHigh(kDigitalPortPin, kAnalogPortPin), DMLow(kDigitalPortPin, kAnalogPortPin){}
 	//JackPlateBoard JackPlate;
 	DeviceModuleHigh DMHigh;
 	DeviceModuleLow DMLow;
-private:
-	const int kDigitalPortPin[8] = { 7, 8, 33, 11, 12, 13, 18, 19 };
-	const int kAnalogPortPin[8] = { 7, 8, 33, 11, 12, 13, A4, A5 };
 };
 
 #endif //NODE_PORTS_H_

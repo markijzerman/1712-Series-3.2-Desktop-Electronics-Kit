@@ -19,6 +19,7 @@ class Constants {
   #define INSTRUCT_CODE_READ_ENVELOPE                       0x0C
   #define INSTRUCT_CODE_READ_ALL_ENVELOPE                   0x0D
   #define INSTRUCT_CODE_LED_FADE_ANIMATION                  0x0E
+  #define INSTRUCT_CODE_PLAY_SD_WAV                         0x0F
 
   //Trigger Codes from Node
   #define TRIGGER_CODE_IR_THRESHOLD                         0xFF

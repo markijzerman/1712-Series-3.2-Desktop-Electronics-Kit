@@ -6,10 +6,10 @@ import time
 
 
 #Initialized Serial Comm Locations, To Be Rearranged Later
-outer_node_addresses = [['/dev/ttyACM0'],
-                        ['/dev/ttyACM1', '/dev/ttyACM2'],
-                        ['/dev/ttyACM3', '/dev/ttyACM4',],
-                        ['/dev/ttyACM5', '/dev/ttyACM6']]
+node_addresses = [['/dev/ttyACM0'],
+                ['/dev/ttyACM1', '/dev/ttyACM2'],
+                ['/dev/ttyACM3', '/dev/ttyACM4'],
+                ['/dev/ttyACM5', '/dev/ttyACM6']]
 
 #Teensy ID's in Physical Locations
 teensy_ids = [[0000000],
@@ -55,7 +55,7 @@ def waitUntilSerialPortsOpen():
         try:
             for i in range(len(serial_list)):
                 for j in range(len(serial_list[i])):
-                    serial_list[i][j] = serial.Serial(outer_node_addresses[i][j],57600)
+                    serial_list[i][j] = serial.Serial(node_addresses[i][j],57600)
                     serial_list[i][j].flush()
                     serial_list[i][j].flushInput()
             break # if we are able to open all, break out of loop
@@ -67,10 +67,21 @@ def waitUntilSerialPortsOpen():
 
 def rearrangeSerialPorts():
 
+    new_node_addresses = list(node_addresses)
+
     for i in range(len(serial_list)):
         for j in range(len(serial_list[i])):
-            sendMessage(INSTRUCT_CODE_GET_TEENSY_ID)
-            code, tid = checkIncomingMessageFromNode(i, j)
+            sendMessage(INSTRUCT_CODE_TEST_COMMUNICATION)
+
+            time.sleep(0.5)
+
+            code, data, tid = checkIncomingMessageFromNode(i, j)
+            for sublist in teensy_ids:
+                if tid in sublist:
+                    new_node_addresses[teensy_ids.index(sublist)][sublist.index(tid)] = node_addresses[i][j]
+
+    node_addresses = new_node_addresses
+
 
 def checkIncomingMessageFromNode(node_row, node_column):
 
@@ -87,14 +98,14 @@ def checkIncomingMessageFromNode(node_row, node_column):
                 print("SOM Not Found, Flushing Input")
                 print(current_SOM)
                 ser.flushInput()
-                return "error", "none"
+                return "error", "none", "none"
         
         #Teensy IDs, TODO: Use these for validation
         t1 = ser.read()
         t2 = ser.read()
         t3 = ser.read()
 
-        # received_tid = ((t1 << 16) | (t2 << 8)) | t3
+        received_tid = ((t1 << 16) | (t2 << 8)) | t3
         #Read in Length and Code
         message_length = ser.read()
         message_code = ser.read()
@@ -109,9 +120,9 @@ def checkIncomingMessageFromNode(node_row, node_column):
                 if current_EOM != EOM_list[i]:
                     print("EOM Not Found")
                     ser.flushInput()
-                    return "error", "none"
+                    return "error", "none", "none"
 
-            return message_code, []
+            return message_code, [], received_tid
 
         else:
 
@@ -125,15 +136,15 @@ def checkIncomingMessageFromNode(node_row, node_column):
                 if current_EOM != EOM_list[i]:
                     print("EOM Not Found")
                     ser.flushInput()
-                    return "error", "none"
+                    return "error", "none", "none"
 
         #Returns identifier byte for message code and relevant data list
-            return message_code, incoming_data
+            return message_code, incoming_data, received_tid
 
 
     else:
 
-        return "none", "none"
+        return "none", "none", "none"
 
 def handleIncomingMessageCode(incoming_message_code, incoming_data, node_row, node_column):
 
@@ -274,7 +285,7 @@ def main():
 
                 for node_row in range(len(serial_list)):
                     for node_column in range(len(serial_list[node_row])):
-                        incoming_message_code, incoming_data= checkIncomingMessageFromNode(node_row, node_column)
+                        incoming_message_code, incoming_data, tid = checkIncomingMessageFromNode(node_row, node_column)
 
                         if incoming_message_code != "none":
 
@@ -308,7 +319,7 @@ def main():
             print("IOError, closing serial ports")
 
             for i in range(len(serial_list)):
-                print ("Stopping" + str(outer_node_addresses[count]))
+                print ("Stopping" + str(node_addresses[count]))
                 serial_list[i].close()
 
             waitUntilSerialPortsOpen()
@@ -318,7 +329,7 @@ def main():
 
             for i in range(len(serial_list)):
                 for j in range(len(serial.list[i])):
-                    print ("Stopping" + str(outer_node_addresses[i][j]))
+                    print ("Stopping" + str(node_addresses[i][j]))
                     serial_list[i][j].close()
 
             print("Completed")
@@ -351,13 +362,13 @@ def test():
                     #     a, b = checkIncomingMessageFromNode(i, j)
 
                     # if a != "none":
-                    #     print(outer_node_addresses[i][j])
+                    #     print(node_addresses[i][j])
                     #     print(a)
                     #     print(b)
                     #     print('\n')
 
                     # if a == INSTRUCT_CODE_TEST_COMMUNICATION and b == []:
-                    #     print(outer_node_addresses[i][j] + ' PASSED')
+                    #     print(node_addresses[i][j] + ' PASSED')
 
                     if serial_list[i][j].inWaiting():
 
@@ -368,7 +379,7 @@ def test():
 
             for i in range(len(serial_list)):
                 for j in range(len(serial_list[i])):
-                    print ("Stopping" + str(outer_node_addresses[i][j]))
+                    print ("Stopping" + str(node_addresses[i][j]))
                     serial_list[i][j].close()
 
             print("Completed")

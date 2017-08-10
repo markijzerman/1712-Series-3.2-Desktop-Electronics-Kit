@@ -26,6 +26,7 @@ class Constants {
   #define TRIGGER_CODE_IR_LEFT_TO_RIGHT                     0xFE
   #define TRIGGER_CODE_IR_RIGHT_TO_LEFT                     0xFD
   #define TRIGGER_CODE_ENVELOPE_THRESHOLD                   0xFC
+  #define TRIGGER_CODE_GRIDEYE_THRESHOLD                    0xFB
 
 };
 

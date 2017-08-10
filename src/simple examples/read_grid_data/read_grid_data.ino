@@ -2,6 +2,7 @@
 #include <GridEye.h>
 
 GridEye myeye;
+USBSerialComm PiSerial(57600);
 
 void setup(void)
 {
@@ -10,7 +11,7 @@ void setup(void)
   // Serial port initialization
   Serial.begin(9600);
   while (!Serial) {
-    ; 
+    ;
   }
 }
 
@@ -20,21 +21,92 @@ int pixel[64];
 void loop(void)
 {
   //Read the temperature
+  // int temp = myeye.thermistorTemp();
+  // Serial.print(F("Thermistor Temp: "));
+  // Serial.println(temp * 0.065); // 1 unit = 0.065 degree
+  //
+  // myeye.pixelOut(pixel);
+  // Serial.println(F("Pixel Output: "));
+  // for (int i = 0; i < 64; i++) {
+  //   if (i && ((i % 8) == 0)) {
+  //     Serial.println();
+  //   }
+  //   Serial.print(pixel[i] * 0.25); // 1 unit = 0.25 degree
+  //   Serial.print(' ');
+  // }
+  // Serial.println();
+  //
+  // // Wait for 0.5 second
+  // delay(500);
+
+
   int temp = myeye.thermistorTemp();
+
   Serial.print(F("Thermistor Temp: "));
   Serial.println(temp * 0.065); // 1 unit = 0.065 degree
 
-  myeye.pixelOut(pixel);
+  // myeye.pixelOut(pixel);
+  pixel = dataGenerator();
+
   Serial.println(F("Pixel Output: "));
+
+  int counter = 0;
+  uint8_t pxlindex[64];
+
   for (int i = 0; i < 64; i++) {
-    if (i && ((i % 8) == 0)) {
-      Serial.println();
+    if(pixel[i] > 35){
+      pxlindex[counter] = lowByte(i); // since i<64, converting into 8-bit using lowByte() does not lose accuracy.
+      counter += 1;
     }
     Serial.print(pixel[i] * 0.25); // 1 unit = 0.25 degree
     Serial.print(' ');
   }
   Serial.println();
 
+  for (int i = 0; i < counter; i++){
+    print(pxlindex[i]);
+    printf(' ');
+  }
+  //PiSerial.SendMessage(TRIGGER_CODE_GRIDEYE_THRESHOLD,pxlindex, counter);
   // Wait for 0.5 second
   delay(500);
+}
+
+void readPixels(){
+  int temp = myeye.thermistorTemp();
+
+  Serial.print(F("Thermistor Temp: "));
+  Serial.println(temp * 0.065); // 1 unit = 0.065 degree
+
+  // myeye.pixelOut(pixel);
+  dataGenerator(data);
+  Serial.println(F("Pixel Output: "));
+
+  int counter = 0;
+  uint8_t pxlindex[64];
+
+  for (int i = 0; i < 64; i++) {
+    if(pixel[i] > 35){
+      pxlindex[counter] = lowByte(i); // since i<64, converting into 8-bit using lowByte() does not lose accuracy.
+      counter += 1;
+    }
+    Serial.print(pixel[i] * 0.25); // 1 unit = 0.25 degree
+    Serial.print(' ');
+  }
+  Serial.println();
+
+  for (int i = 0; i < counter; i++){
+    print(pxlindex[i]);
+    printf(' ');
+  }
+  PiSerial.SendMessage(TRIGGER_CODE_GRIDEYE_THRESHOLD,pxlindex, counter);
+  // Wait for 0.5 second
+  delay(500);
+}
+
+void dataGenerator(int *data){
+  for(int i = 0; i < sizeof(data); i++){
+    data[i] = random(120,160);
+  }
+
 }

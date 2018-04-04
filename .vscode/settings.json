@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.env.osx": {
+        "PATH": "/Users/markijzerman/.platformio/penv/bin:/Users/markijzerman/.platformio/penv:/Users/markijzerman/anaconda/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/git/bin:/usr/local/MacGPG2/bin:/Users/markijzerman/.rvm/bin",
+        "PLATFORMIO_CALLER": "vscode"
+    }
+}

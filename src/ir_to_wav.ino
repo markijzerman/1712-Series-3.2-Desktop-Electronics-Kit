@@ -11,29 +11,23 @@
 // Plug WAV trigger into device module port A
 // Plug sound detector into device module port B
 
-// SOUND DETECTOR SETUP
+#include "dm_high_current.h"
+#include "dm_low_current.h"
+#include "node_ports.h"
+#include "Arduino.h"
+#include "wav_trigger.h"
+#include "sound_detector.h"
+#include "usb_serial_comm.h"
 
-// DM port B has two data pins: DM port B pin 2 and DM port B pin 3
-// from 3.1 Device Module A schematics we see DM port B pin 2 = DM pin 8 and DM port B pin 3 = DM pin 7
-// from pinout diagram (or node controller schematics) NC port 2 pin 8 is connected to Teensy pin A19
-// and NC port 2 pin 7 is connected to Teensy pin A18
-// and if using node_ports library you'll find that
-// Port2.DMLow.getPin('B',2) == A19
-// Port2.DMLow.getPin('B',3) == A18
+//IR SENSOR SETUP
 
-// sound detector cable mapping shows
-// envelope == DM port B pin 2
-// audio == DM port B pin 3
-
-// Therefore, 
-int envelope_pin =  A19;
-int audio_pin = A18;
-
-// rest of variables for sound detector
-int envelope_value = 0;
-int envelope_trigger = 0;
-int envelope_threshold = 700;
-
+// from 3.1 Device Module A schematics we see DM port E is connected to I/O pin 4
+// from pinout diagram (or node controller schematics) NC port 1 pin 4 is connected to Teensy pin A7
+// and if using node_ports library you'll find Port1.DMLow.getPin('E') == A7
+int ir_pin = A11;
+int ir_threshold = 400;
+bool ir_trigger = false;
+int ir_value = 0;
 
 // WAV TRIGGER SETUP
 
@@ -50,14 +44,16 @@ int envelope_threshold = 700;
 // WAV tx == DM port B pin 3
 
 // Therefore (REMINDER: controller rx connects to WAV trigger tx, vice versa),
-int rx_pin = 3;
-int tx_pin = 10;
+int rx_pin = 4;
+int tx_pin = 3;
+int chosenSound = 0;
 
 // WAV triggers are controlled by a serial connection
 // Not by coincidence, Teensy pins 9 and 10 can be used as hardware Serial2
 // However, a SoftwareSerial is limited but has enough function to control a WAV trigger
 // if not using hardware serial pins the following line will become SoftwareSerial WAVSerial(rx_pin,tx_pin);
-#define WAVSerial Serial2
+// #define WAVSerial Serial2
+SoftwareSerial WAVSerial(rx_pin,tx_pin);
 
 // WAV Trigger commands (usually, these are defined in a separate header file)
 #define TRK_PLAY_SOLO 0
@@ -78,38 +74,24 @@ void trackControl(int trk, int code){
   WAVSerial.write(txbuf,8);
 }
 
-void masterGain(int gain) {
-
-  unsigned short vol;
-
-  buffer[0] = SOM1;
-  buffer[1] = SOM2;
-  buffer[2] = 0x07;
-  buffer[3] = CMD_MASTER_VOLUME;
-  vol = (unsigned short)gain;
-  buffer[4] = (uint8_t)vol;
-  buffer[5] = (uint8_t)(vol >> 8);
-  buffer[6] = EOM;
-
-  buffer_size = kMasterGainBufferSize;
-}
-
-
 void setup() {
-  pinMode(audio_pin, INPUT);
-  
   // start the serial port for the WAV trigger
   //
   WAVSerial.begin(57600);
-  masterGain(10);
 }
 
 void loop() {
-  envelope_value = analogRead(envelope_pin);
-  envelope_trigger = envelope_value > envelope_threshold;
-  if (envelope_trigger){
-    trackControl(1,TRK_PLAY_SOLO);
-  }
+    ir_value = analogRead(ir_pin);
+    Serial.println(ir_value);
+    ir_trigger = ir_value > 400;
+    Serial.println(ir_trigger);
+
+    if (ir_trigger == true)
+    {
+        chosenSound = random(15);
+        trackControl(chosenSound,TRK_PLAY_SOLO);
+        delay(random(300));
+    }
 }
 
 

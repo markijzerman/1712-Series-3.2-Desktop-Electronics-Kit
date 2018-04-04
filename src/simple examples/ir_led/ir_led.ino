@@ -23,7 +23,7 @@
 // from 3.1 Device Module A schematics we see DM port E is connected to I/O pin 4
 // from pinout diagram (or node controller schematics) NC port 1 pin 4 is connected to Teensy pin A7
 // and if using node_ports library you'll find Port1.DMLow.getPin('E') == A7
-int ir_pin = A7;
+int ir_pin = A11;
 int ir_threshold = 400;
 bool ir_trigger = false;
 int ir_value = 0;
@@ -41,7 +41,9 @@ void setup() {
 }
 
 void loop() {
+  delay(200);
   ir_value = analogRead(ir_pin);
+  Serial.println(ir_value);
   ir_trigger = ir_value > 400;
   digitalWrite(led_pin, ir_trigger);
 }

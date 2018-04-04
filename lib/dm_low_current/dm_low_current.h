@@ -10,7 +10,7 @@
 
 #include "Arduino.h"
 #include <SoftwareSerial.h>
-#include <Adafruit_Neopixel.h>
+#include <Adafruit_NeoPixel.h>
 
 class DeviceModuleLow
 {

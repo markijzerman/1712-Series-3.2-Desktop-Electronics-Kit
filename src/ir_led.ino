@@ -10,6 +10,14 @@
 // Plug IR sensor into device module port E
 // Plug LED into device module port F
 
+#include "dm_high_current.h"
+#include "dm_low_current.h"
+#include "node_ports.h"
+#include "Arduino.h"
+#include "wav_trigger.h"
+#include "sound_detector.h"
+#include "usb_serial_comm.h"
+
 //IR SENSOR SETUP
 
 // from 3.1 Device Module A schematics we see DM port E is connected to I/O pin 4

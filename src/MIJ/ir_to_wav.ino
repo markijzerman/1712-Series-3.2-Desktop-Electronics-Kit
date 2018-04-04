@@ -88,7 +88,7 @@ void loop() {
 
     if (ir_trigger == true)
     {
-        chosenSound = random(15);
+        chosenSound = random(34);
         trackControl(chosenSound,TRK_PLAY_SOLO);
         delay(random(300));
     }
